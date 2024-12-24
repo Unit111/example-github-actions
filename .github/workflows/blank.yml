@@ -18,6 +18,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install .
+        playwright install chromium
 
     - name: Run tests
       run: |
