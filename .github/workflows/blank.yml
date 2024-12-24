@@ -1,37 +1,34 @@
 name: Python Tests
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: Install dependencies
-      run: |
-        pip install .
-        playwright install chromium
+      - name: Install dependencies
+        run: |
+          pip install .
+          playwright install chromium
 
-    - name: Run tests
-      run: |
-        pytest .
+      - name: Run tests
+        run: |
+          pytest .
 
-  upload:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
       - uses: shallwefootball/s3-upload-action@master
+        name: Upload S3
+        id: S3
         with:
           aws_key_id: ${{ secrets.AWS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
           aws_bucket: ${{ secrets.AWS_BUCKET }}
-          source_dir: './report.html'
+          source_dir: 'report.html'
