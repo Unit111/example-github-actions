@@ -18,6 +18,7 @@ jobs:
     - name: Install dependencies
       run: |
         cd tests
+        ls
         pip install .
 
     - name: Run tests
