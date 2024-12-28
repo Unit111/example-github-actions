@@ -20,10 +20,33 @@ jobs:
       - name: List S3 files
         run: |
           aws s3 ls ${{ secrets.AWS_BUCKET }}/reports/ --recursive > s3-file-list.txt
-          cat s3-file-list.txt
 
-#      - name: Upload file list to GitHub Pages
-#        uses: peaceiris/actions-gh-pages@v3
-#        with:
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#          publish_dir: ./s3-file-list.txt
+      - name: Upload S3 file list artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: s3-file-list
+          path: s3-file-list.txt
+
+  commit-file:
+    runs-on: ubuntu-latest
+    needs: list-s3-files
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download S3 file list artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: s3-file-list
+          path: .
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add s3-file-list.txt
+          git commit -m 'Add S3 file list'
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
