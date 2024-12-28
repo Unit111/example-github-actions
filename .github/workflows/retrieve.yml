@@ -19,7 +19,7 @@ jobs:
 
       - name: List S3 files
         run: |
-          aws s3 ls s3://your-bucket-name/your-directory/ --recursive > s3-file-list.txt
+          aws s3 ls ${{ secrets.AWS_BUCKET }}/reports/ --recursive > s3-file-list.txt
           cat s3-file-list.txt
 
 #      - name: Upload file list to GitHub Pages
